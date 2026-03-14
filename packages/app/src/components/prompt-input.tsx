@@ -1451,70 +1451,13 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                   </TooltipKeybind>
                 </div>
                 <div data-component="prompt-model-control">
-                  <Show
-                    when={providers.paid().length > 0}
-                    fallback={
-                      <TooltipKeybind
-                        placement="top"
-                        gutter={4}
-                        title={language.t("command.model.choose")}
-                        keybind={command.keybind("model.choose")}
-                      >
-                        <Button
-                          data-action="prompt-model"
-                          as="div"
-                          variant="ghost"
-                          size="normal"
-                          class="min-w-0 max-w-[320px] text-13-regular text-text-base group"
-                          style={control()}
-                          onClick={() => dialog.show(() => <DialogSelectModelUnpaid model={local.model} />)}
-                        >
-                          <Show when={local.model.current()?.provider?.id}>
-                            <ProviderIcon
-                              id={local.model.current()!.provider.id}
-                              class="size-4 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity duration-150"
-                              style={{ "will-change": "opacity", transform: "translateZ(0)" }}
-                            />
-                          </Show>
-                          <span class="truncate">
-                            {local.model.current()?.name ?? language.t("dialog.model.select.title")}
-                          </span>
-                          <Icon name="chevron-down" size="small" class="shrink-0" />
-                        </Button>
-                      </TooltipKeybind>
-                    }
+                  <div
+                    class="flex items-center gap-1.5 px-2 py-1 text-13-regular text-text-weak"
+                    style={control()}
                   >
-                    <TooltipKeybind
-                      placement="top"
-                      gutter={4}
-                      title={language.t("command.model.choose")}
-                      keybind={command.keybind("model.choose")}
-                    >
-                      <ModelSelectorPopover
-                        model={local.model}
-                        triggerAs={Button}
-                        triggerProps={{
-                          variant: "ghost",
-                          size: "normal",
-                          style: control(),
-                          class: "min-w-0 max-w-[320px] text-13-regular text-text-base group",
-                          "data-action": "prompt-model",
-                        }}
-                      >
-                        <Show when={local.model.current()?.provider?.id}>
-                          <ProviderIcon
-                            id={local.model.current()!.provider.id}
-                            class="size-4 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity duration-150"
-                            style={{ "will-change": "opacity", transform: "translateZ(0)" }}
-                          />
-                        </Show>
-                        <span class="truncate">
-                          {local.model.current()?.name ?? language.t("dialog.model.select.title")}
-                        </span>
-                        <Icon name="chevron-down" size="small" class="shrink-0" />
-                      </ModelSelectorPopover>
-                    </TooltipKeybind>
-                  </Show>
+                    <Icon name="sparkle" size="small" class="shrink-0" />
+                    <span class="truncate">StaffAI Thinking</span>
+                  </div>
                 </div>
                 <div data-component="prompt-variant-control">
                   <TooltipKeybind

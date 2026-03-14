@@ -1,131 +1,135 @@
-import { createMemo, For, Match, Switch } from "solid-js"
+import { createMemo, For } from "solid-js"
 import { Button } from "@opencode-ai/ui/button"
-import { Logo } from "@opencode-ai/ui/logo"
-import { useLayout } from "@/context/layout"
+import { Icon } from "@opencode-ai/ui/icon"
 import { useNavigate } from "@solidjs/router"
 import { base64Encode } from "@opencode-ai/util/encode"
-import { Icon } from "@opencode-ai/ui/icon"
-import { usePlatform } from "@/context/platform"
-import { DateTime } from "luxon"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { DialogSelectDirectory } from "@/components/dialog-select-directory"
-import { DialogSelectServer } from "@/components/dialog-select-server"
+import { useLayout } from "@/context/layout"
 import { useServer } from "@/context/server"
 import { useGlobalSync } from "@/context/global-sync"
 import { useLanguage } from "@/context/language"
 
+const SKILLS = [
+  {
+    id: "company-investigation",
+    title: "Company Investigation",
+    description: 'Try "Investigate TSMC"',
+    icon: "search" as const,
+    gradient: "from-blue-500/20 to-blue-600/10",
+  },
+  {
+    id: "data-analysis",
+    title: "Data Analysis Workflow",
+    description: 'Try "Analyze Q3 financial reports"',
+    icon: "chart" as const,
+    gradient: "from-purple-500/20 to-purple-600/10",
+  },
+  {
+    id: "report-summary",
+    title: "Weekly Report Summary",
+    description: 'Summarize "ZEUS Games weekly meeting notes"',
+    icon: "file-text" as const,
+    gradient: "from-green-500/20 to-green-600/10",
+  },
+  {
+    id: "competitor-research",
+    title: "Competitor Market Research",
+    description: 'Analyze "AIOTEK" market opportunities',
+    icon: "globe" as const,
+    gradient: "from-orange-500/20 to-orange-600/10",
+  },
+]
+
+const QUICK_ACTIONS = [
+  { label: "Company Investigation", icon: "search" },
+  { label: "Data Analysis", icon: "chart" },
+  { label: "Document Processing", icon: "file-text" },
+  { label: "Strategy Simulation", icon: "sparkle" },
+  { label: "Image Analysis", icon: "image" },
+]
+
 export default function Home() {
   const sync = useGlobalSync()
   const layout = useLayout()
-  const platform = usePlatform()
-  const dialog = useDialog()
   const navigate = useNavigate()
   const server = useServer()
   const language = useLanguage()
-  const homedir = createMemo(() => sync.data.path.home)
-  const recent = createMemo(() => {
-    return sync.data.project
-      .slice()
-      .sort((a, b) => (b.time.updated ?? b.time.created) - (a.time.updated ?? a.time.created))
-      .slice(0, 5)
-  })
 
-  const serverDotClass = createMemo(() => {
-    const healthy = server.healthy()
-    if (healthy === true) return "bg-icon-success-base"
-    if (healthy === false) return "bg-icon-critical-base"
-    return "bg-border-weak-base"
-  })
-
-  function openProject(directory: string) {
+  function startSession(prompt?: string) {
+    const directory = sync.data.project[0]?.worktree ?? sync.data.path.home
     layout.projects.open(directory)
     server.projects.touch(directory)
     navigate(`/${base64Encode(directory)}`)
   }
 
-  async function chooseProject() {
-    function resolve(result: string | string[] | null) {
-      if (Array.isArray(result)) {
-        for (const directory of result) {
-          openProject(directory)
-        }
-      } else if (result) {
-        openProject(result)
-      }
-    }
-
-    if (platform.openDirectoryPickerDialog && server.isLocal()) {
-      const result = await platform.openDirectoryPickerDialog?.({
-        title: language.t("command.project.open"),
-        multiple: true,
-      })
-      resolve(result)
-    } else {
-      dialog.show(
-        () => <DialogSelectDirectory multiple={true} onSelect={resolve} />,
-        () => resolve(null),
-      )
-    }
-  }
+  const userName = createMemo(() => {
+    return "User"
+  })
 
   return (
-    <div class="mx-auto mt-55 w-full md:w-auto px-4">
-      <Logo class="md:w-xl opacity-12" />
-      <Button
-        size="large"
-        variant="ghost"
-        class="mt-4 mx-auto text-14-regular text-text-weak"
-        onClick={() => dialog.show(() => <DialogSelectServer />)}
-      >
-        <div
-          classList={{
-            "size-2 rounded-full": true,
-            [serverDotClass()]: true,
-          }}
-        />
-        {server.name}
-      </Button>
-      <Switch>
-        <Match when={sync.data.project.length > 0}>
-          <div class="mt-20 w-full flex flex-col gap-4">
-            <div class="flex gap-2 items-center justify-between pl-3">
-              <div class="text-14-medium text-text-strong">{language.t("home.recentProjects")}</div>
-              <Button icon="folder-add-left" size="normal" class="pl-2 pr-3" onClick={chooseProject}>
-                {language.t("command.project.open")}
-              </Button>
-            </div>
-            <ul class="flex flex-col gap-2">
-              <For each={recent()}>
-                {(project) => (
-                  <Button
-                    size="large"
-                    variant="ghost"
-                    class="text-14-mono text-left justify-between px-3"
-                    onClick={() => openProject(project.worktree)}
-                  >
-                    {project.worktree.replace(homedir(), "~")}
-                    <div class="text-14-regular text-text-weak">
-                      {DateTime.fromMillis(project.time.updated ?? project.time.created).toRelative()}
-                    </div>
-                  </Button>
-                )}
-              </For>
-            </ul>
+    <div class="mx-auto mt-16 w-full max-w-2xl px-4 flex flex-col items-center">
+      {/* Greeting */}
+      <div class="text-center mb-8">
+        <h1 class="text-28-medium text-text-strong mb-2">
+          Hello, {userName()}!
+        </h1>
+        <p class="text-14-regular text-text-weak">
+          Your Intelligent Chief of Staff.
+        </p>
+      </div>
+
+      {/* Your Next Command - Skill Cards */}
+      <div class="w-full mb-8">
+        <h2 class="text-14-medium text-text-base mb-4">Your Next Command</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <For each={SKILLS}>
+            {(skill) => (
+              <button
+                class="flex flex-col gap-2 p-3 rounded-xl bg-surface-base border border-border-weak-base hover:border-border-base transition-colors text-left cursor-pointer"
+                onClick={() => startSession(skill.description)}
+              >
+                <div class="w-full aspect-[4/3] rounded-lg bg-gradient-to-br from-surface-raised-base to-surface-base flex items-center justify-center mb-1">
+                  <Icon name={skill.icon as any} class="text-text-weak" size="large" />
+                </div>
+                <div class="text-12-medium text-text-strong leading-tight">{skill.title}</div>
+                <div class="text-11-regular text-text-weak leading-tight line-clamp-2">{skill.description}</div>
+              </button>
+            )}
+          </For>
+        </div>
+      </div>
+
+      {/* Quick Action Chips */}
+      <div class="w-full mb-6 flex flex-wrap gap-2 justify-center">
+        <For each={QUICK_ACTIONS}>
+          {(action) => (
+            <button
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border-weak-base bg-surface-base hover:border-border-base transition-colors cursor-pointer"
+              onClick={() => startSession()}
+            >
+              <Icon name={action.icon as any} class="text-text-weak" />
+              <span class="text-12-regular text-text-weak">{action.label}</span>
+            </button>
+          )}
+        </For>
+      </div>
+
+      {/* Chat Input */}
+      <div class="w-full">
+        <button
+          class="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border-weak-base bg-surface-base hover:border-border-base transition-colors cursor-pointer"
+          onClick={() => startSession()}
+        >
+          <span class="text-14-regular text-text-weak flex-1 text-left">
+            Ask anything...
+          </span>
+          <div class="flex items-center gap-2">
+            <span class="text-11-regular text-text-weak px-2 py-0.5 rounded bg-surface-raised-base">
+              StaffAI Thinking v2.1
+            </span>
+            <Icon name="arrow-right" class="text-text-weak" />
           </div>
-        </Match>
-        <Match when={true}>
-          <div class="mt-30 mx-auto flex flex-col items-center gap-3">
-            <Icon name="folder-add-left" size="large" />
-            <div class="flex flex-col gap-1 items-center justify-center">
-              <div class="text-14-medium text-text-strong">{language.t("home.empty.title")}</div>
-              <div class="text-12-regular text-text-weak">{language.t("home.empty.description")}</div>
-            </div>
-            <Button class="px-3 mt-1" onClick={chooseProject}>
-              {language.t("command.project.open")}
-            </Button>
-          </div>
-        </Match>
-      </Switch>
+        </button>
+      </div>
     </div>
   )
 }

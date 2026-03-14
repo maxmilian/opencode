@@ -117,10 +117,32 @@ OpenCode 的 `SkillTool` 機制（類似 slash command）天然適合作為模�
 
 | 項目 | 說明 |
 |------|------|
-| **認證系統** | JWT + OAuth（Google/GitHub） |
+| **認證系統** | Google SSO（預設登入方式） |
+| **檔案存取** | Google Drive（使用者文件）+ GCS（個人檔案空間） |
 | **使用者 DB** | PostgreSQL（沿用現有） |
 | **部署** | Docker Compose on GCP VM（取代 Cloudflare） |
 | **域名** | staff-ai.io（與現有服務共用或子域名） |
+
+### 3.6 檔案與儲存架構
+
+```
+使用者檔案存取
+├── Google Drive — 使用者既有文件（透過 Google SSO OAuth scope 授權）
+│   ├── 讀取 Google Sheets/Docs/Slides
+│   ├── 上傳分析結果
+│   └── 共享報告
+├── GCS (Google Cloud Storage) — 個人檔案空間
+│   ├── 上傳的 CSV/Excel/PDF
+│   ├── 生成的報告
+│   └── 語音簡報 MP3
+└── 無本地檔案系統 — 全雲端架構
+```
+
+**認證流程**：
+1. 使用者以 Google SSO 登入
+2. OAuth scope 包含 Google Drive 存取權限
+3. GCS bucket 以 `staffai-{user_id}/` 前綴隔離個人空間
+4. 不需要本地檔案系統（移除 file picker / directory selector）
 
 ---
 
