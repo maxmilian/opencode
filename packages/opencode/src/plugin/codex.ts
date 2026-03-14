@@ -98,7 +98,7 @@ function buildAuthorizeUrl(redirectUri: string, pkce: PkceCodes, state: string):
     id_token_add_organizations: "true",
     codex_cli_simplified_flow: "true",
     state,
-    originator: "opencode",
+    originator: "staffai",
   })
   return `${ISSUER}/oauth/authorize?${params.toString()}`
 }
@@ -147,7 +147,7 @@ async function refreshAccessToken(refreshToken: string): Promise<TokenResponse> 
 const HTML_SUCCESS = `<!doctype html>
 <html>
   <head>
-    <title>OpenCode - Codex Authorization Successful</title>
+    <title>StaffAI - Codex Authorization Successful</title>
     <style>
       body {
         font-family:
@@ -178,7 +178,7 @@ const HTML_SUCCESS = `<!doctype html>
   <body>
     <div class="container">
       <h1>Authorization Successful</h1>
-      <p>You can close this window and return to OpenCode.</p>
+      <p>You can close this window and return to StaffAI.</p>
     </div>
     <script>
       setTimeout(() => window.close(), 2000)
@@ -189,7 +189,7 @@ const HTML_SUCCESS = `<!doctype html>
 const HTML_ERROR = (error: string) => `<!doctype html>
 <html>
   <head>
-    <title>OpenCode - Codex Authorization Failed</title>
+    <title>StaffAI - Codex Authorization Failed</title>
     <style>
       body {
         font-family:

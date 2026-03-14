@@ -77,7 +77,7 @@ export namespace Agent {
     const result: Record<string, Info> = {
       build: {
         name: "build",
-        description: "The default agent. Executes tools based on configured permissions.",
+        description: "The default agent. Helps with business research, analysis, and task execution.",
         options: {},
         permission: PermissionNext.merge(
           defaults,
@@ -115,7 +115,7 @@ export namespace Agent {
       },
       general: {
         name: "general",
-        description: `General-purpose agent for researching complex questions and executing multi-step tasks. Use this agent to execute multiple units of work in parallel.`,
+        description: `General-purpose agent for researching complex questions, gathering business intelligence, and executing multi-step tasks in parallel.`,
         permission: PermissionNext.merge(
           defaults,
           PermissionNext.fromConfig({
@@ -149,7 +149,7 @@ export namespace Agent {
           }),
           user,
         ),
-        description: `Fast agent specialized for exploring codebases. Use this when you need to quickly find files by patterns (eg. "src/components/**/*.tsx"), search code for keywords (eg. "API endpoints"), or answer questions about the codebase (eg. "how do API endpoints work?"). When calling this agent, specify the desired thoroughness level: "quick" for basic searches, "medium" for moderate exploration, or "very thorough" for comprehensive analysis across multiple locations and naming conventions.`,
+        description: `Fast agent specialized for research and exploration. Use this when you need to quickly search for information, find documents, or answer questions about data. Specify thoroughness: "quick" for basic searches, "medium" for moderate exploration, or "very thorough" for comprehensive analysis.`,
         prompt: PROMPT_EXPLORE,
         options: {},
         mode: "subagent",
