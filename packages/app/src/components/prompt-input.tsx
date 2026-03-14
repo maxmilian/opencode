@@ -1455,7 +1455,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                     class="flex items-center gap-1.5 px-2 py-1 text-13-regular text-text-weak"
                     style={control()}
                   >
-                    <Icon name="sparkle" size="small" class="shrink-0" />
+                    <Icon name="brain" size="small" class="shrink-0" />
                     <span class="truncate">StaffAI Thinking</span>
                   </div>
                 </div>

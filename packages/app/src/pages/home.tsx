@@ -13,38 +13,38 @@ const SKILLS = [
     id: "company-investigation",
     title: "Company Investigation",
     description: 'Try "Investigate TSMC"',
-    icon: "search" as const,
+    icon: "magnifying-glass" as const,
     gradient: "from-blue-500/20 to-blue-600/10",
   },
   {
     id: "data-analysis",
     title: "Data Analysis Workflow",
     description: 'Try "Analyze Q3 financial reports"',
-    icon: "chart" as const,
+    icon: "code" as const,
     gradient: "from-purple-500/20 to-purple-600/10",
   },
   {
     id: "report-summary",
     title: "Weekly Report Summary",
     description: 'Summarize "ZEUS Games weekly meeting notes"',
-    icon: "file-text" as const,
+    icon: "checklist" as const,
     gradient: "from-green-500/20 to-green-600/10",
   },
   {
     id: "competitor-research",
     title: "Competitor Market Research",
     description: 'Analyze "AIOTEK" market opportunities',
-    icon: "globe" as const,
+    icon: "glasses" as const,
     gradient: "from-orange-500/20 to-orange-600/10",
   },
 ]
 
 const QUICK_ACTIONS = [
-  { label: "Company Investigation", icon: "search" },
-  { label: "Data Analysis", icon: "chart" },
-  { label: "Document Processing", icon: "file-text" },
-  { label: "Strategy Simulation", icon: "sparkle" },
-  { label: "Image Analysis", icon: "image" },
+  { label: "Company Investigation", icon: "magnifying-glass" },
+  { label: "Data Analysis", icon: "code" },
+  { label: "Document Processing", icon: "checklist" },
+  { label: "Strategy Simulation", icon: "brain" },
+  { label: "Image Analysis", icon: "photo" },
 ]
 
 export default function Home() {
